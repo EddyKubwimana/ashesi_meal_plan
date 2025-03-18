@@ -51,12 +51,12 @@ class SignInScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                CustomTextField(
+                const CustomTextField(
                   hintText: "Enter your username",
                   icon: Icons.person,
                 ),
                 const SizedBox(height: 15),
-                CustomTextField(
+                const CustomTextField(
                   hintText: "Enter your password",
                   icon: Icons.lock,
                   isPassword: true,

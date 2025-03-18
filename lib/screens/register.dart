@@ -17,9 +17,9 @@ class SignUpScreen extends StatelessWidget {
             child: Container(
               width: 120,
               height: 120,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppTheme.primaryColor,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(100),
                 ),
               ),
@@ -31,9 +31,9 @@ class SignUpScreen extends StatelessWidget {
             child: Container(
               width: 120,
               height: 120,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppTheme.primaryColor,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topRight: Radius.circular(100),
                 ),
               ),
@@ -45,11 +45,12 @@ class SignUpScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 IconButton(
-                  icon: Icon(Icons.arrow_back, color: AppTheme.primaryColor),
+                  icon: const Icon(Icons.arrow_back,
+                      color: AppTheme.primaryColor),
                   onPressed: () => Navigator.pop(context),
                 ),
                 const SizedBox(height: 20),
-                Center(
+                const Center(
                   child: Text(
                     'Sign Up',
                     style: TextStyle(
@@ -86,7 +87,7 @@ class SignUpScreen extends StatelessWidget {
                 Center(
                   child: GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Text(
+                    child: const Text(
                       'Already have an account? Sign In',
                       style: TextStyle(
                         color: AppTheme.primaryColor,
@@ -114,15 +115,16 @@ class SignUpScreen extends StatelessWidget {
           hintText: hint,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: AppTheme.primaryColor),
+            borderSide: const BorderSide(color: AppTheme.primaryColor),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: AppTheme.primaryColor),
+            borderSide: const BorderSide(color: AppTheme.primaryColor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
+            borderSide:
+                const BorderSide(color: AppTheme.primaryColor, width: 2),
           ),
         ),
       ),
