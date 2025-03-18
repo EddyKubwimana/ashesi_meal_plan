@@ -15,11 +15,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Meal Plan',
-      theme: AppTheme.lightTheme, // Apply light theme
-      darkTheme: AppTheme.darkTheme, // Apply dark theme
-      themeMode: ThemeMode.system, // Auto switch based on device settings
-      home: const SignInScreen(), // Correct placement of home
-      debugShowCheckedModeBanner: false, // Optional: Removes debug banner
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      home: const SignUpScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
