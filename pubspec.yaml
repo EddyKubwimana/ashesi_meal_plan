@@ -32,6 +32,9 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.5.3
   cupertino_icons: ^1.0.8
+  local_auth: ^2.3.0
+  get: ^4.7.2
+  flutter_native_splash: ^2.4.5
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -48,6 +51,18 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+flutter_native_splash:
+  color: "#f7f6f1"
+  color_dark: "#272727"
+  image: assets/images/image_2.png
+  image_dark: assets/images/image_2.png
+
+  android_12:
+    image: assets/images/image_2.png
+    icon_background_color: "#f7f6f1"
+    image_dark: assets/images/image_2.png
+    icon_background_color_dark: "#272727"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
