@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "eating_goals.dart";
 
 Color customRed = Color(0xFF961818);
 
@@ -241,11 +242,52 @@ class SideBar extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            _buildMenuItem("Account", Icons.person),
-            _buildMenuItem("Pin Change", Icons.lock),
-            _buildMenuItem("Eating Goals", Icons.restaurant),
-            _buildMenuItem("Meal Usage & Insights", Icons.insights),
-            _buildMenuItem("Share", Icons.share),
+            _buildMenuItem(
+              "Account",
+              Icons.person,
+                  () {
+                // Navigate to another page if needed
+                },
+            ),
+            _buildMenuItem(
+              "Pin Change",
+              Icons.lock,
+                () {
+                  // Navigate to another page if needed
+                },
+            ),
+            _buildMenuItem(
+              "Eating Goals",
+              Icons.restaurant,
+                () {
+                  // Navigate to another page if needed
+                },
+            ),
+
+            _buildMenuItem(
+                "Eating Goals",
+                Icons.restaurant,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyCLPage()), // Make sure MyCLPage is imported
+                  );
+                },
+              ),
+              _buildMenuItem(
+                "Meal Usage & Insights",
+                Icons.insights,
+                () {
+                  // Navigate to another page 
+                },
+              ),
+              _buildMenuItem(
+                "Share",
+                Icons.share,
+                () {
+                  // Handle share logic
+                },
+              ),
           ],
         ),
       ),
