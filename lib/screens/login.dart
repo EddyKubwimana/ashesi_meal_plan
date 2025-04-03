@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "main.dart";
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 
 class SignInScreen extends StatelessWidget {
@@ -84,7 +85,12 @@ class SignInScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DashboardScreen()), // Make sure MyCLPage is imported
+                      );
+                    },
                     child: const Text(
                       "Sign in",
                       style: TextStyle(fontSize: 16, color: Colors.white),

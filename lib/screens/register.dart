@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
+import "login.dart";
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -76,7 +77,12 @@ class SignUpScreen extends StatelessWidget {
                       ),
                       minimumSize: const Size(double.infinity, 50),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SignInScreen()), // Make sure MyCLPage is imported
+                      );
+                    },
                     child: const Text(
                       'Sign Up',
                       style: TextStyle(color: Colors.white, fontSize: 16),
