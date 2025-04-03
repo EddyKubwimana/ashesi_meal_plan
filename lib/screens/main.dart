@@ -252,19 +252,23 @@ class SideBar extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(String title, IconData icon) {
-    return Padding(
+Widget _buildMenuItem(String title, IconData icon, VoidCallback onTap) {
+  return InkWell(
+    onTap: onTap,
+    child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           Icon(icon, color: Colors.white, size: 24),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Text(
             title,
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: const TextStyle(color: Colors.white, fontSize: 16),
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
