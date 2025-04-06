@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
-import "login.dart";
+import 'package:ashesi_meal_plan/screens/login.dart';
+import 'package:ashesi_meal_plan/controllers/auth_controller.dart';
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({super.key});
+  SignUpScreen({super.key});
+
+  final AuthController _authController = Get.find();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _userIdController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +20,7 @@ class SignUpScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Background Decorations
+          // Background Decorations - Corrected Positioned widgets
           Positioned(
             top: 0,
             right: 0,
@@ -48,7 +57,7 @@ class SignUpScreen extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.arrow_back,
                       color: AppTheme.primaryColor),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Get.back(),
                 ),
                 const SizedBox(height: 20),
                 const Center(
@@ -62,37 +71,47 @@ class SignUpScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildTextField(Icons.person, 'Username'),
-                _buildTextField(Icons.badge, 'User ID'),
-                _buildTextField(Icons.lock, 'Password', isPassword: true),
-                _buildTextField(Icons.lock, 'Confirm Password',
-                    isPassword: true),
-                const SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SignInScreen()), // Make sure MyCLPage is imported
-                      );
-                    },
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
+                _buildTextField(Icons.person, 'Email',
+                    controller: _usernameController),
+                _buildTextField(Icons.badge, 'User ID',
+                    controller: _userIdController),
+                _buildTextField(
+                  Icons.lock,
+                  'Password',
+                  isPassword: true,
+                  controller: _passwordController,
                 ),
+                _buildTextField(
+                  Icons.lock,
+                  'Confirm Password',
+                  isPassword: true,
+                  controller: _confirmPasswordController,
+                ),
+                const SizedBox(height: 20),
+                Obx(() => Center(
+                      child: _authController.isLoading.value
+                          ? const CircularProgressIndicator(
+                              color: AppTheme.primaryColor)
+                          : ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.primaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                minimumSize: const Size(double.infinity, 50),
+                              ),
+                              onPressed: _handleSignUp,
+                              child: const Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                            ),
+                    )),
                 const SizedBox(height: 20),
                 Center(
                   child: GestureDetector(
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => Get.off(() => SignInScreen()),
                     child: const Text(
                       'Already have an account? Sign In',
                       style: TextStyle(
@@ -110,11 +129,45 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(IconData icon, String hint,
-      {bool isPassword = false}) {
+  Future<void> _handleSignUp() async {
+    if (_usernameController.text.isEmpty ||
+        _userIdController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      Get.snackbar('Error', 'All fields are required');
+      return;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      Get.snackbar('Error', 'Passwords do not match');
+      return;
+    }
+
+    if (_passwordController.text.length < 8) {
+      Get.snackbar('Error', 'Password must be at least 8 characters');
+      return;
+    }
+
+    try {
+      await _authController.signUp(
+        _usernameController.text.trim(),
+        _userIdController.text.trim(),
+        _passwordController.text,
+      );
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    }
+  }
+
+  Widget _buildTextField(
+    IconData icon,
+    String hint, {
+    bool isPassword = false,
+    required TextEditingController controller,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
+        controller: controller,
         obscureText: isPassword,
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: AppTheme.primaryColor),

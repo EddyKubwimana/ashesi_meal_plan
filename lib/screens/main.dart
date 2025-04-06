@@ -94,7 +94,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Text(
                     "Your Details",
                     style: TextStyle(
-                        fontSize: 28, fontWeight: FontWeight.bold, color: customRed),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: customRed),
                   ),
                   SizedBox(height: 20),
                   GridView.count(
@@ -104,14 +106,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     children: [
-                      _buildInfoCard(
-                          "Semester Balance", "Spring 2025", "GHC 9000", 'assets/food2.jpg'),
-                      _buildInfoCard(
-                          "Daily Limit", "Spring 2025", "GHC 100", 'assets/food3.jpg'),
-                      _buildInfoCard(
-                          "Day's Balance", "Spring 2025", "GHC 90", 'assets/food4.jpg'),
-                      _buildInfoCard(
-                          "Meal Plan Type", "Spring 2025", "100 Limit", 'assets/food6.jpg'),
+                      _buildInfoCard("Semester Balance", "Spring 2025",
+                          "GHC 9000", 'assets/food2.jpg'),
+                      _buildInfoCard("Daily Limit", "Spring 2025", "GHC 100",
+                          'assets/food3.jpg'),
+                      _buildInfoCard("Day's Balance", "Spring 2025", "GHC 90",
+                          'assets/food4.jpg'),
+                      _buildInfoCard("Meal Plan Type", "Spring 2025",
+                          "100 Limit", 'assets/food6.jpg'),
                     ],
                   ),
                 ],
@@ -171,7 +173,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildInfoCard(String title, String subtitle, String value, String imagePath) {
+  Widget _buildInfoCard(
+      String title, String subtitle, String value, String imagePath) {
     return Container(
       padding: EdgeInsets.all(10), // Fixed: Moved padding here
       decoration: BoxDecoration(
@@ -201,7 +204,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           Text(
             value,
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -245,72 +249,72 @@ class SideBar extends StatelessWidget {
             _buildMenuItem(
               "Account",
               Icons.person,
-                  () {
+              () {
                 // Navigate to another page if needed
-                },
+              },
             ),
             _buildMenuItem(
               "Pin Change",
               Icons.lock,
-                () {
-                  // Navigate to another page if needed
-                },
+              () {
+                // Navigate to another page if needed
+              },
             ),
             _buildMenuItem(
               "Eating Goals",
               Icons.restaurant,
-                () {
-                  // Navigate to another page if needed
-                },
+              () {
+                // Navigate to another page if needed
+              },
             ),
-
             _buildMenuItem(
-                "Eating Goals",
-                Icons.restaurant,
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyCLPage()), // Make sure MyCLPage is imported
-                  );
-                },
-              ),
-              _buildMenuItem(
-                "Meal Usage & Insights",
-                Icons.insights,
-                () {
-                  // Navigate to another page 
-                },
-              ),
-              _buildMenuItem(
-                "Share",
-                Icons.share,
-                () {
-                  // Handle share logic
-                },
-              ),
+              "Eating Goals",
+              Icons.restaurant,
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const MyCLPage()), // Make sure MyCLPage is imported
+                );
+              },
+            ),
+            _buildMenuItem(
+              "Meal Usage & Insights",
+              Icons.insights,
+              () {
+                // Navigate to another page
+              },
+            ),
+            _buildMenuItem(
+              "Share",
+              Icons.share,
+              () {
+                // Handle share logic
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-Widget _buildMenuItem(String title, IconData icon, VoidCallback onTap) {
-  return InkWell(
-    onTap: onTap,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white, size: 24),
-          const SizedBox(width: 10),
-          Text(
-            title,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
-          ),
-        ],
+  Widget _buildMenuItem(String title, IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white, size: 24),
+            const SizedBox(width: 10),
+            Text(
+              title,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

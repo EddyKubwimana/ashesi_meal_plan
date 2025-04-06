@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ashesi_meal_plan/screens/welcome.dart';
-import 'package:ashesi_meal_plan/screens/login.dart';
 import 'package:ashesi_meal_plan/screens/register.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 
@@ -18,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: const SignUpScreen(),
+      home: SignUpScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
