@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:settings/authentication/controllers/splash_screen_controller.dart';
-import 'package:settings/constants/image_strings.dart';
+import "../authentication/controllers/splash_screen_controller.dart";
+import '../constants/image_strings.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({Key? key}) : super(key: key);
@@ -21,10 +21,9 @@ class SplashScreen extends StatelessWidget {
             Obx(
               () => AnimatedPositioned(
                 duration: const Duration(milliseconds: 1000),
-                top:
-                    splashController.animate.value
-                        ? MediaQuery.of(context).size.height / 2 - 150
-                        : MediaQuery.of(context).size.height,
+                top: splashController.animate.value
+                    ? MediaQuery.of(context).size.height / 2 - 150
+                    : MediaQuery.of(context).size.height,
                 left: MediaQuery.of(context).size.width / 2 - 150,
                 child: Image.asset(tSplashImage),
               ),

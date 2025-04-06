@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:settings/authentication/controllers/biometric_controller.dart';
+import '../authentication/controllers/biometric_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -16,52 +16,51 @@ class SettingsScreen extends StatelessWidget {
 
     await showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Set PIN'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: pinController,
-                  decoration: const InputDecoration(
-                    labelText: 'Enter PIN (4 digits)',
-                  ),
-                  keyboardType: TextInputType.number,
-                  maxLength: 4,
-                ),
-                TextField(
-                  controller: confirmPinController,
-                  decoration: const InputDecoration(labelText: 'Confirm PIN'),
-                  keyboardType: TextInputType.number,
-                  maxLength: 4,
-                ),
-              ],
+      builder: (context) => AlertDialog(
+        title: const Text('Set PIN'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: pinController,
+              decoration: const InputDecoration(
+                labelText: 'Enter PIN (4 digits)',
+              ),
+              keyboardType: TextInputType.number,
+              maxLength: 4,
             ),
-            actions: [
-              TextButton(
-                onPressed: () async {
-                  if (pinController.text == confirmPinController.text &&
-                      pinController.text.length == 4) {
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.setString('app_pin', pinController.text);
-                    Get.back();
-                    Get.snackbar('Success', 'PIN set successfully');
-                  } else {
-                    Get.snackbar(
-                      'Error',
-                      'PINs do not match or invalid length',
-                    );
-                  }
-                },
-                child: const Text('Save'),
-              ),
-              TextButton(
-                onPressed: () => Get.back(),
-                child: const Text('Cancel'),
-              ),
-            ],
+            TextField(
+              controller: confirmPinController,
+              decoration: const InputDecoration(labelText: 'Confirm PIN'),
+              keyboardType: TextInputType.number,
+              maxLength: 4,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              if (pinController.text == confirmPinController.text &&
+                  pinController.text.length == 4) {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString('app_pin', pinController.text);
+                Get.back();
+                Get.snackbar('Success', 'PIN set successfully');
+              } else {
+                Get.snackbar(
+                  'Error',
+                  'PINs do not match or invalid length',
+                );
+              }
+            },
+            child: const Text('Save'),
           ),
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -72,53 +71,51 @@ class SettingsScreen extends StatelessWidget {
 
     await showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Set Password'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Enter Password',
-                  ),
-                  obscureText: true,
-                ),
-                TextField(
-                  controller: confirmPasswordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Confirm Password',
-                  ),
-                  obscureText: true,
-                ),
-              ],
+      builder: (context) => AlertDialog(
+        title: const Text('Set Password'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Enter Password',
+              ),
+              obscureText: true,
             ),
-            actions: [
-              TextButton(
-                onPressed: () async {
-                  if (passwordController.text ==
-                          confirmPasswordController.text &&
-                      passwordController.text.isNotEmpty) {
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.setString(
-                      'app_password',
-                      passwordController.text,
-                    );
-                    Get.back();
-                    Get.snackbar('Success', 'Password set successfully');
-                  } else {
-                    Get.snackbar('Error', 'Passwords do not match or empty');
-                  }
-                },
-                child: const Text('Save'),
+            TextField(
+              controller: confirmPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Confirm Password',
               ),
-              TextButton(
-                onPressed: () => Get.back(),
-                child: const Text('Cancel'),
-              ),
-            ],
+              obscureText: true,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              if (passwordController.text == confirmPasswordController.text &&
+                  passwordController.text.isNotEmpty) {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString(
+                  'app_password',
+                  passwordController.text,
+                );
+                Get.back();
+                Get.snackbar('Success', 'Password set successfully');
+              } else {
+                Get.snackbar('Error', 'Passwords do not match or empty');
+              }
+            },
+            child: const Text('Save'),
           ),
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
     );
   }
 

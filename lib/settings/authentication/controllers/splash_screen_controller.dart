@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:settings/authentication/controllers/biometric_controller.dart';
-import 'package:settings/pages/settings_screen.dart';
-import 'package:settings/pages/welcome_screen.dart';
+import '../controllers/biometric_controller.dart';
+import "../../pages/welcome_screen.dart";
+import "../../pages/settings_screen.dart";
 
 class SplashScreenController extends GetxController {
   static SplashScreenController get find => Get.find();
