@@ -293,6 +293,13 @@ class SideBar extends StatelessWidget {
                 // Handle share logic
               },
             ),
+            _buildMenuItem(
+              "Logout",
+              Icons.logout,
+              () {
+                // Handle share logic
+              },
+            ),
           ],
         ),
       ),

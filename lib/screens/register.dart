@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
-import 'package:ashesi_meal_plan/screens/login.dart';
 import 'package:ashesi_meal_plan/controllers/auth_controller.dart';
+import 'package:ashesi_meal_plan/routes/app_routes.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({super.key});
 
   final AuthController _authController = Get.find();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _userIdController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -20,7 +20,6 @@ class SignUpScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Background Decorations - Corrected Positioned widgets
           Positioned(
             top: 0,
             right: 0,
@@ -71,19 +70,25 @@ class SignUpScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildTextField(Icons.person, 'Email',
-                    controller: _usernameController),
-                _buildTextField(Icons.badge, 'User ID',
-                    controller: _userIdController),
                 _buildTextField(
-                  Icons.lock,
-                  'Password',
+                  icon: Icons.email,
+                  hint: 'Email',
+                  controller: _emailController,
+                ),
+                _buildTextField(
+                  icon: Icons.person,
+                  hint: 'User ID',
+                  controller: _userIdController,
+                ),
+                _buildTextField(
+                  icon: Icons.lock,
+                  hint: 'Password',
                   isPassword: true,
                   controller: _passwordController,
                 ),
                 _buildTextField(
-                  Icons.lock,
-                  'Confirm Password',
+                  icon: Icons.lock,
+                  hint: 'Confirm Password',
                   isPassword: true,
                   controller: _confirmPasswordController,
                 ),
@@ -111,7 +116,7 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Center(
                   child: GestureDetector(
-                    onTap: () => Get.off(() => SignInScreen()),
+                    onTap: () => Get.offNamed(AppRoutes.signIn),
                     child: const Text(
                       'Already have an account? Sign In',
                       style: TextStyle(
@@ -129,49 +134,25 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _handleSignUp() async {
-    if (_usernameController.text.isEmpty ||
-        _userIdController.text.isEmpty ||
-        _passwordController.text.isEmpty) {
-      Get.snackbar('Error', 'All fields are required');
-      return;
-    }
-
-    if (_passwordController.text != _confirmPasswordController.text) {
-      Get.snackbar('Error', 'Passwords do not match');
-      return;
-    }
-
-    if (_passwordController.text.length < 8) {
-      Get.snackbar('Error', 'Password must be at least 8 characters');
-      return;
-    }
-
-    try {
-      await _authController.signUp(
-        _usernameController.text.trim(),
-        _userIdController.text.trim(),
-        _passwordController.text,
-      );
-    } catch (e) {
-      Get.snackbar('Error', e.toString());
-    }
-  }
-
-  Widget _buildTextField(
-    IconData icon,
-    String hint, {
+  Widget _buildTextField({
+    required IconData icon,
+    required String hint,
     bool isPassword = false,
     required TextEditingController controller,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
+        key: UniqueKey(),
         controller: controller,
         obscureText: isPassword,
+        style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.grey[200],
           prefixIcon: Icon(icon, color: AppTheme.primaryColor),
           hintText: hint,
+          hintStyle: TextStyle(color: Colors.grey[600]),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(color: AppTheme.primaryColor),
@@ -188,5 +169,39 @@ class SignUpScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _handleSignUp() async {
+    if (_emailController.text.isEmpty ||
+        _userIdController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      Get.snackbar('Error', 'All fields are required');
+      return;
+    }
+
+    if (!_emailController.text.isEmail) {
+      Get.snackbar('Error', 'Please enter a valid email');
+      return;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      Get.snackbar('Error', 'Passwords do not match');
+      return;
+    }
+
+    if (_passwordController.text.length < 8) {
+      Get.snackbar('Error', 'Password must be at least 8 characters');
+      return;
+    }
+
+    try {
+      await _authController.signUp(
+        _emailController.text.trim(),
+        _userIdController.text.trim(),
+        _passwordController.text,
+      );
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    }
   }
 }

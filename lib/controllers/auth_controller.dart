@@ -1,8 +1,8 @@
-/// lib/controllers/auth_controller.dart
 import 'package:get/get.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ashesi_meal_plan/models/user.dart';
 import 'package:ashesi_meal_plan/utils/password_utils.dart';
+import '../routes/app_routes.dart';
 
 class AuthController extends GetxController {
   final Rx<User?> _user = Rx<User?>(null);
@@ -13,8 +13,8 @@ class AuthController extends GetxController {
 
   @override
   void onInit() {
-    _loadUser();
     super.onInit();
+    _loadUser();
   }
 
   Future<void> _loadUser() async {
@@ -24,14 +24,21 @@ class AuthController extends GetxController {
       final username = await _secureStorage.read(key: 'username');
       final passwordHash = await _secureStorage.read(key: 'passwordHash');
 
+      print(
+          'DEBUG: userId=$userId, username=$username, passwordHash=$passwordHash');
+
       if (userId != null && username != null && passwordHash != null) {
         _user.value = User(
           id: userId,
-          username: username,
           userId: userId,
+          username: username,
           password: passwordHash,
         );
+      } else {
+        await logout(); // clear invalid session
       }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load user session: $e');
     } finally {
       isLoading.value = false;
     }
@@ -40,14 +47,6 @@ class AuthController extends GetxController {
   Future<void> signUp(String username, String userId, String password) async {
     isLoading.value = true;
     try {
-      if (username.isEmpty || userId.isEmpty || password.isEmpty) {
-        throw 'All fields are required';
-      }
-
-      if (password.length < 8) {
-        throw 'Password must be at least 8 characters';
-      }
-
       final passwordHash = PasswordUtils.hashPassword(password);
 
       await _secureStorage.write(key: 'userId', value: userId);
@@ -55,15 +54,16 @@ class AuthController extends GetxController {
       await _secureStorage.write(key: 'passwordHash', value: passwordHash);
 
       _user.value = User(
-        username: username,
+        id: userId,
         userId: userId,
+        username: username,
         password: passwordHash,
       );
 
-      Get.offAllNamed('/home');
+      Get.offAllNamed(AppRoutes.signIn);
       Get.snackbar('Success', 'Account created successfully!');
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('Sign Up Error', e.toString());
       rethrow;
     } finally {
       isLoading.value = false;
@@ -71,39 +71,44 @@ class AuthController extends GetxController {
   }
 
   Future<void> login(String userId, String password) async {
+    isLoading.value = true;
     try {
       final storedUserId = await _secureStorage.read(key: 'userId');
       final storedUsername = await _secureStorage.read(key: 'username');
       final storedPasswordHash = await _secureStorage.read(key: 'passwordHash');
 
-      if (storedUserId == null || storedPasswordHash == null) {
-        throw 'User not found';
+      if (storedUserId == null ||
+          storedPasswordHash == null ||
+          storedUsername == null) {
+        throw 'No account found. Please sign up first.';
       }
 
       if (storedUserId != userId) {
-        throw 'Invalid user ID';
+        throw 'Invalid user ID.';
       }
 
       if (!PasswordUtils.verifyPassword(password, storedPasswordHash)) {
-        throw 'Invalid password';
+        throw 'Invalid password.';
       }
 
       _user.value = User(
         id: storedUserId,
-        username: storedUsername ?? '',
         userId: storedUserId,
+        username: storedUsername,
         password: storedPasswordHash,
       );
 
-      Get.offAllNamed('/home');
+      Get.offAllNamed(AppRoutes.dashboard);
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('Login Error', e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 
   Future<void> logout() async {
     await _secureStorage.deleteAll();
     _user.value = null;
-    Get.offAllNamed('/login');
+    Get.offAllNamed(AppRoutes.signIn);
   }
 }
