@@ -36,8 +36,9 @@ dependencies:
   get: ^4.6.6
   crypto: ^3.0.3  
   encrypt: ^5.0.1  
-  http: ^1.2.0
   flutter_secure_storage: ^8.0.0  # For secure storage
+  http: ^1.2.0
+  
 
 
   # The following adds the Cupertino Icons font to your application.

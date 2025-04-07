@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "eating_goals.dart";
+import "../services/api_services.dart";
 
 Color customRed = Color(0xFF961818);
 
@@ -24,6 +25,60 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   bool _isSidebarOpen = false;
+  double? balance;
+  String? firstname;
+  String? lastname;
+  String? funder;
+  double? dailyLimit;
+  String? cardType;
+  String? status;
+
+  Map<String, dynamic>? mealData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBalance();
+    fetchMealPlanData();
+  }
+
+  void fetchBalance() async {
+    double newBalance = await ApiService().getCurrentBalance("83092025");
+    setState(() {
+      balance = newBalance;
+    });
+  }
+
+  void fetchMealPlanData() async {
+    try {
+      Map<String, dynamic> data =
+          await ApiService().getMealPlanData("83092025");
+
+      setState(() {
+        mealData = data;
+        balance = data['current_balance'];
+        funder = data['funder'] ?? "N/A";
+        firstname = data['firstname'];
+        lastname = data['lastname'];
+        dailyLimit = data['daily_spending_limit'];
+        cardType = data['card_type'];
+        status = data['subscriber_status'];
+
+        // You can extract more fields from the JSON if needed, e.g.:
+        // dailyLimit = data['daily_limit'];
+        // mealPlanType = data['meal_plan'];
+      });
+    } catch (e) {
+      print("Error fetching meal plan data: $e");
+      // Optionally: show a snackbar or error UI
+    }
+  }
+
+  Future<void> _toggleSidebar() async {
+    setState(() {
+      _isSidebarOpen = !_isSidebarOpen;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +89,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.menu, color: customRed),
-          onPressed: () {
-            setState(() {
-              _isSidebarOpen = !_isSidebarOpen;
-            });
-          },
+          onPressed: _toggleSidebar,
         ),
       ),
       body: Stack(
@@ -63,14 +114,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Shania",
+                              "$firstname",
                               style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
                                   color: customRed),
                             ),
                             Text(
-                              "Shamuyarona",
+                              "$lastname",
                               style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
@@ -106,46 +157,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     children: [
-                      _buildInfoCard("Semester Balance", "Spring 2025",
-                          "GHC 9000", 'assets/food2.jpg'),
-                      _buildInfoCard("Daily Limit", "Spring 2025", "GHC 100",
-                          'assets/food3.jpg'),
-                      _buildInfoCard("Day's Balance", "Spring 2025", "GHC 90",
-                          'assets/food4.jpg'),
-                      _buildInfoCard("Meal Plan Type", "Spring 2025",
-                          "100 Limit", 'assets/food6.jpg'),
+                      _buildInfoCard(
+                          "Today Balance",
+                          "$cardType",
+                          "GHC ${balance?.toStringAsFixed(2)}",
+                          'assets/food2.jpg'),
+                      _buildInfoCard("Daily Limit", "$status",
+                          "GHC ${dailyLimit}", 'assets/food3.jpg'),
                     ],
                   ),
                 ],
               ),
             ),
           ),
-
-          // Red Circles Background
-          // Positioned(
-          //   top: -50,
-          //   right: -50,
-          //   child: Container(
-          //     width: 150,
-          //     height: 150,
-          //     decoration: BoxDecoration(
-          //       color: customRed,
-          //       shape: BoxShape.circle,
-          //     ),
-          //   ),
-          // ),
-          // Positioned(
-          //   bottom: -50,
-          //   left: -50,
-          //   child: Container(
-          //     width: 150,
-          //     height: 150,
-          //     decoration: BoxDecoration(
-          //       color: customRed,
-          //       shape: BoxShape.circle,
-          //     ),
-          //   ),
-          // ),
 
           // Sidebar Overlay
           if (_isSidebarOpen)
@@ -176,7 +200,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildInfoCard(
       String title, String subtitle, String value, String imagePath) {
     return Container(
-      padding: EdgeInsets.all(10), // Fixed: Moved padding here
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: customRed,
         borderRadius: BorderRadius.circular(20),
@@ -264,18 +288,11 @@ class SideBar extends StatelessWidget {
               "Eating Goals",
               Icons.restaurant,
               () {
-                // Navigate to another page if needed
-              },
-            ),
-            _buildMenuItem(
-              "Eating Goals",
-              Icons.restaurant,
-              () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          const MyCLPage()), // Make sure MyCLPage is imported
+                    builder: (context) => const MyCLPage(),
+                  ),
                 );
               },
             ),
@@ -297,7 +314,7 @@ class SideBar extends StatelessWidget {
               "Logout",
               Icons.logout,
               () {
-                // Handle share logic
+                // Handle logout
               },
             ),
           ],
@@ -314,10 +331,10 @@ class SideBar extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: Colors.white, size: 24),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             Text(
               title,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: TextStyle(color: Colors.white, fontSize: 16),
             ),
           ],
         ),

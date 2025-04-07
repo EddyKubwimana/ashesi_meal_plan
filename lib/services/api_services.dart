@@ -86,14 +86,44 @@ class ApiService {
   Future<double> getCurrentBalance(String studentId) async {
     try {
       final response = await _get('getCurrentBalance/$studentId');
-      if (response is Map && response.containsKey('balance')) {
-        return response['balance']?.toDouble() ?? 0.0;
+      if (response is Map && response.containsKey('current_balance')) {
+        return response['current_balance']?.toDouble() ?? 1111;
       }
       throw InvalidResponseException('Invalid balance response format');
     } on ServerBusyException {
       rethrow;
     } catch (e) {
       throw FetchDataException('Failed to get balance: ${e.toString()}');
+    }
+  }
+
+  Future<Map<String, dynamic>> getMealPlanData(String studentId) async {
+    if (studentId.isEmpty) {
+      throw ArgumentError('Student ID cannot be empty');
+    }
+
+    try {
+      final response = await _get('getCurrentBalance/$studentId');
+
+      if (response is! Map<String, dynamic>) {
+        throw InvalidResponseException(
+          'Expected Map<String, dynamic> but got ${response.runtimeType}',
+        );
+      }
+
+      if (response.isEmpty) {
+        throw InvalidResponseException('Response is empty');
+      }
+
+      return response;
+    } on ServerBusyException {
+      rethrow;
+    } on InvalidResponseException {
+      rethrow;
+    } catch (e) {
+      throw FetchDataException(
+        'Failed to fetch meal plan data for student $studentId: ${e.toString()}',
+      );
     }
   }
 }
