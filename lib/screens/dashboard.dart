@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import "eating_goals.dart";
 import "../services/api_services.dart";
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 Color customRed = Color(0xFF961818);
 
@@ -24,6 +25,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+
   bool _isSidebarOpen = false;
   double? balance;
   String? firstname;
@@ -51,8 +54,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void fetchMealPlanData() async {
     try {
-      Map<String, dynamic> data =
-          await ApiService().getMealPlanData("83092025");
+      final userId = await _secureStorage.read(key: 'userId');
+      Map<String, dynamic> data = await ApiService().getMealPlanData("$userId");
 
       setState(() {
         mealData = data;

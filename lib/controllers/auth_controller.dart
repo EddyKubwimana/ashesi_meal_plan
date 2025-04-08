@@ -24,9 +24,6 @@ class AuthController extends GetxController {
       final username = await _secureStorage.read(key: 'username');
       final passwordHash = await _secureStorage.read(key: 'passwordHash');
 
-      print(
-          'DEBUG: userId=$userId, username=$username, passwordHash=$passwordHash');
-
       if (userId != null && username != null && passwordHash != null) {
         _user.value = User(
           id: userId,
