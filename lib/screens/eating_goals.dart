@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "edit_eating_goal.dart";
+Color customRed = Color(0xFF961818);
+
 class MyCLPage extends StatefulWidget {
   const MyCLPage({super.key});
-
   @override
   State<MyCLPage> createState() => _MyCLPageState();
 }
