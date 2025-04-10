@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    package = <"com.ash.push_notification">
     <application
         android:label="ashesi_meal_plan"
         android:name="${applicationName}"
