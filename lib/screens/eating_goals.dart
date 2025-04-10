@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "edit_eating_goal.dart";
+import "../push_notifications/notifs_for_eating_goals.dart";
 Color customRed = Color(0xFF961818);
 
 class MyCLPage extends StatefulWidget {
@@ -67,7 +68,7 @@ class _MyCLPageState extends State<MyCLPage> {
     );
 
     if (selectedTime == null) return; // User canceled
-
+    
     String formattedTime = "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
 
     List<String> goalEntry = [prompt, formattedTime]; 

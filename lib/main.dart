@@ -6,8 +6,9 @@ import 'package:ashesi_meal_plan/controllers/auth_controller.dart';
 import 'package:ashesi_meal_plan/screens/register.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 import './routes/app_routes.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 void main() async {
+  await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
