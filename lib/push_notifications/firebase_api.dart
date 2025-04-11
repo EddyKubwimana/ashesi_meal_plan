@@ -3,8 +3,14 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import "package:firebase_messaging/firebase_messaging.dart" ;
 import "../screens/eating_goals.dart";
 import 'package:get/get.dart';
+import '../screens/eating_goals.dart';
+import 'package:timezone/timezone.dart' as tz;
+import "package:flutter_timezone/flutter_timezone.dart";
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FirebaseApi {
+  late SharedPreferences tokens;
   final _firebaseMessaging = FirebaseMessaging.instance;
   final _androidChannel = const AndroidNotificationChannel(
     "high_importance_channel",
@@ -15,7 +21,13 @@ class FirebaseApi {
   final _localNotifications = FlutterLocalNotificationsPlugin();
   Future <void> initNotifications() async {
     await _firebaseMessaging.requestPermission();
-    final fCMToken = await _firebaseMessaging.getToken();
+    final fCMToken = await _firebaseMessaging.getToken() ?? "";
+    tokens = await SharedPreferences.getInstance();
+  
+    if (!tokens.containsKey("device") && fCMToken != "") {
+      tokens.setString("device", fCMToken);
+    }
+
     initPushNotifications();
     initLocalNotifications();
   }
@@ -70,4 +82,29 @@ class FirebaseApi {
     AndroidFlutterLocalNotificationsPlugin> ();
     await platform?.createNotificationChannel(_androidChannel);
   }
+  Future <void> scheduleNotifs({ 
+    required int id,
+    required String title,
+    required String body,
+    required int hour,
+    required int minute,}) async{
+      final now = tz.TZDateTime.now(tz.local);
+      var scheduleDate = tz.TZDateTime(
+        tz.local,
+        now.year,
+        now.month,
+        now.day,
+        hour,
+        minute,
+      );
+      await _localNotifications.zonedSchedule(
+        id,
+        title,
+        body,
+        scheduleDate,
+        const NotificationDetails(),
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+    }
 }   

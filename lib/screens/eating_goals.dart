@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import "../push_notifications/firebase_api.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import "edit_eating_goal.dart";
-import "../push_notifications/firebase_api.dart";
 Color customRed = Color(0xFF961818);
 Color lightBackground = Color(0xFFF5F5F5);
 
@@ -80,7 +80,7 @@ class _MyCLPageState extends State<MyCLPage> {
     );
 
     if (selectedTime == null) return; // User canceled
-
+    
     String formattedTime = "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
 
     List<String> goalEntry = [prompt, formattedTime]; 
@@ -93,6 +93,15 @@ class _MyCLPageState extends State<MyCLPage> {
     await prefs.setStringList(counter.toString(), goalEntry);
     await prefs.setInt('counter', counter);
     myController.clear();
+    int hour = selectedTime.hour;
+    int minute = selectedTime.minute;
+    await FirebaseApi().scheduleNotifs(
+      id: counter, // or any unique ID
+      title: "Eating Goal",
+      body: prompt,
+      hour: hour,
+      minute: minute,
+    );
   }
 
   @override
