@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import "eating_goals.dart";
 import "../services/api_services.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:ashesi_meal_plan/screens/cafeteria.dart';
+import 'package:ashesi_meal_plan/screens/meals.dart';
 
 Color customRed = Color(0xFF961818);
 
@@ -136,7 +138,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: Image.asset(
-                          'assets/food1.jpg',
+                          'assets/food5.jpg',
                           width: 150,
                           height: 150,
                           fit: BoxFit.cover,
@@ -160,6 +162,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     children: [
+                      _buildInfoCard("Semester Balance", "$status",
+                          "GHC ${dailyLimit}", 'assets/food1.jpg'),
                       _buildInfoCard(
                           "Today Balance",
                           "$cardType",
@@ -167,6 +171,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           'assets/food2.jpg'),
                       _buildInfoCard("Daily Limit", "$status",
                           "GHC ${dailyLimit}", 'assets/food3.jpg'),
+                      _buildInfoCard("Meal Plan Type", "$status",
+                          "GHC ${dailyLimit}", 'assets/food4.jpg'),
                     ],
                   ),
                 ],
@@ -274,10 +280,13 @@ class SideBar extends StatelessWidget {
             ),
             SizedBox(height: 20),
             _buildMenuItem(
-              "Account",
-              Icons.person,
+              "Cafeteria",
+              Icons.fastfood,
               () {
-                // Navigate to another page if needed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CafeteriaPage()),
+                );
               },
             ),
             _buildMenuItem(
@@ -303,7 +312,12 @@ class SideBar extends StatelessWidget {
               "Meal Usage & Insights",
               Icons.insights,
               () {
-                // Navigate to another page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MealInsightsPage(),
+                  ),
+                );
               },
             ),
             _buildMenuItem(
