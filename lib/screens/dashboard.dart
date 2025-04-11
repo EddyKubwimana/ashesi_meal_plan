@@ -3,6 +3,7 @@ import "eating_goals.dart";
 import "../services/api_services.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ashesi_meal_plan/screens/cafeteria.dart';
+import 'package:ashesi_meal_plan/screens/meals.dart';
 
 Color customRed = Color(0xFF961818);
 
@@ -311,7 +312,12 @@ class SideBar extends StatelessWidget {
               "Meal Usage & Insights",
               Icons.insights,
               () {
-                // Navigate to another page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MealInsightsPage(),
+                  ),
+                );
               },
             ),
             _buildMenuItem(
