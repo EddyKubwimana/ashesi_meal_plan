@@ -3,9 +3,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import "package:firebase_messaging/firebase_messaging.dart" ;
 import "../screens/eating_goals.dart";
 import 'package:get/get.dart';
-import '../screens/eating_goals.dart';
 import 'package:timezone/timezone.dart' as tz;
-import "package:flutter_timezone/flutter_timezone.dart";
+
 
 import 'package:shared_preferences/shared_preferences.dart';
 

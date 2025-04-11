@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 import 'package:ashesi_meal_plan/controllers/auth_controller.dart';
-import 'package:ashesi_meal_plan/routes/app_routes.dart';
 
 class AppRoutes {
   static const String signIn = '/sign-in';

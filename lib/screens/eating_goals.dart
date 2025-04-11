@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import "../push_notifications/firebase_api.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import "edit_eating_goal.dart";
+import "../push_notifications/firebase_api.dart";
 Color customRed = Color(0xFF961818);
 Color lightBackground = Color(0xFFF5F5F5);
 
