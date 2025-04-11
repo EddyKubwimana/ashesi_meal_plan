@@ -8,10 +8,10 @@ import 'package:ashesi_meal_plan/screens/register.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 import './routes/app_routes.dart';
 import 'package:firebase_core/firebase_core.dart';
-import '../push_notifications/firebase_api.dart';
 void main() async {
+  final firebaseApi = FirebaseApi();
   await Firebase.initializeApp();
-  await FirebaseApi.initNotifications();
+  await firebaseApi.initNotifications();
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
