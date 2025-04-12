@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 import 'package:ashesi_meal_plan/controllers/auth_controller.dart';
-import 'package:ashesi_meal_plan/routes/app_routes.dart';
+
+class AppRoutes {
+  static const String signIn = '/sign-in';
+  static const String signUp = '/sign-up';
+  static const String dashboard = '/dashboard';
+}
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({super.key});
@@ -11,8 +16,7 @@ class SignUpScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _userIdController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +29,11 @@ class SignUpScreen extends StatelessWidget {
             right: 0,
             child: Container(
               width: 120,
-              height: 120,
+              height: 100,
               decoration: const BoxDecoration(
                 color: AppTheme.primaryColor,
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(100),
+                  bottomLeft: Radius.circular(80),
                 ),
               ),
             ),
@@ -54,9 +58,32 @@ class SignUpScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back,
-                      color: AppTheme.primaryColor),
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () => Get.back(),
+                ),
+                const Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Welcome to the Ashesi Food App 🥙!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primaryColor,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Discover the nearest meals around campus — fast, fresh, and convenient.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
                 const Center(
@@ -116,7 +143,10 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Center(
                   child: GestureDetector(
-                    onTap: () => Get.offNamed(AppRoutes.signIn),
+                    onTap: () {
+      
+      Get.offAllNamed('/sign-in'); 
+    },
                     child: const Text(
                       'Already have an account? Sign In',
                       style: TextStyle(
@@ -163,8 +193,7 @@ class SignUpScreen extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide:
-                const BorderSide(color: AppTheme.primaryColor, width: 2),
+            borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
           ),
         ),
       ),

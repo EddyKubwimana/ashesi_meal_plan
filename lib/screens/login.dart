@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
-import 'package:ashesi_meal_plan/screens/register.dart';
 import 'package:ashesi_meal_plan/controllers/auth_controller.dart';
+import 'package:ashesi_meal_plan/screens/dashboard.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -59,13 +59,45 @@ class _SignInScreenState extends State<SignInScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    const SizedBox(height: 20),
                     const Text(
-                      'Sign in',
+                      'Ashesi Meal App',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 36,
                         fontWeight: FontWeight.bold,
                         color: AppTheme.primaryColor,
                       ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Login 🔐',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Column(
+                      children: [
+                        Text(
+                          'Welcome back!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.primaryColor,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Sign in to explore today\'s menu 🍛🍔 and manage your meal plan 📅 effortlessly.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 30),
                     CustomTextField(
@@ -129,7 +161,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       children: [
                         const Text("Don't have an account? "),
                         GestureDetector(
-                          onTap: () => Get.off(() => SignUpScreen()),
+                          // onTap: () => Get.off(() => SignUpScreen()),
+                          onTap: () => Get.off(() => DashboardScreen()),
                           child: const Text(
                             "Sign Up",
                             style: TextStyle(
