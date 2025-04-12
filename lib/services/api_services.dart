@@ -126,6 +126,38 @@ class ApiService {
       );
     }
   }
+
+  Future<Map<String, dynamic>> getMelaPlanHistory(
+      String studentId, String startDate, String endDate) async {
+    if (studentId.isEmpty) {
+      throw ArgumentError('Student ID cannot be empty');
+    }
+
+    try {
+      final response =
+          await _get('getCurrentBalance/$studentId/$startDate/$endDate');
+
+      if (response is! Map<String, dynamic>) {
+        throw InvalidResponseException(
+          'Expected Map<String, dynamic> but got ${response.runtimeType}',
+        );
+      }
+
+      if (response.isEmpty) {
+        throw InvalidResponseException('Response is empty');
+      }
+
+      return response;
+    } on ServerBusyException {
+      rethrow;
+    } on InvalidResponseException {
+      rethrow;
+    } catch (e) {
+      throw FetchDataException(
+        'Failed to fetch meal plan history for student $studentId: ${e.toString()}',
+      );
+    }
+  }
 }
 
 class AppException implements Exception {
