@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import "eating_goals.dart";
 import "../services/api_services.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -56,6 +57,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  Future<void> changePin() async {
+    try {
+      final userId = await _secureStorage.read(key: 'userId');
+      Map<String, dynamic> data =
+          await ApiService().changeMealPlanPin("$userId");
+
+      if (!mounted) return;
+      setState(() {
+        firstname = data['firstname'];
+        lastname = data['lastname'];
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              'You have successfully changed your pin, $firstname $lastname!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Something wrong happened: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   void fetchMealPlanData() async {
     try {
       final userId = await _secureStorage.read(key: 'userId');
@@ -64,9 +96,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         mealData = data;
         balance = data['current_balance'];
-        funder = data['funder'] ?? "N/A";
+        funder = data['funder'];
         firstname = data['firstname'];
         lastname = data['lastname'];
+        ;
         dailyLimit = data['daily_spending_limit'];
         cardType = data['card_type'];
         status = data['subscriber_status'];
@@ -74,8 +107,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         mealPlanName = data['meal_plan_name'];
       });
     } catch (e) {
-      print("Error fetching meal plan data: $e");
-      // Optionally: show a snackbar or error UI
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Something wrong happened: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -119,14 +158,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "$firstname",
+                              "${firstname ?? "loading...."}",
                               style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
                                   color: customRed),
                             ),
                             Text(
-                              "$lastname",
+                              "${lastname ?? "loading...."}",
                               style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
@@ -162,17 +201,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     children: [
-                      _buildInfoCard("Semester Balance", "$funder",
-                          "GHC ${amount}", 'assets/food1.jpg'),
+                      _buildInfoCard(
+                          "Semester Balance",
+                          "${funder ?? "loading...."}r",
+                          "GHC ${amount ?? 0.0}",
+                          'assets/food1.jpg'),
                       _buildInfoCard(
                           "Today Balance",
                           "$cardType",
-                          "GHC ${balance?.toStringAsFixed(2)}",
+                          "GHC ${balance?.toStringAsFixed(2) ?? 0.0}",
                           'assets/food2.jpg'),
                       _buildInfoCard("Daily Limit", "$status",
-                          "GHC ${dailyLimit}", 'assets/food3.jpg'),
-                      _buildInfoCard("Meal Plan Type", "   ",
-                          " ${mealPlanName}", 'assets/food4.jpg'),
+                          "GHC ${dailyLimit ?? 0.0}", 'assets/food3.jpg'),
+                      _buildInfoCard(
+                          "Meal Plan Type",
+                          "   ",
+                          " ${mealPlanName ?? "loading...."}",
+                          'assets/food4.jpg'),
                     ],
                   ),
                 ],
@@ -199,7 +244,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             left: _isSidebarOpen ? 0 : -250,
             top: 0,
             bottom: 0,
-            child: SideBar(),
+            child: SideBar(onChangePin: changePin),
           ),
         ],
       ),
@@ -247,6 +292,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 }
 
 class SideBar extends StatelessWidget {
+  final Future<void> Function() onChangePin;
+
+  const SideBar({
+    Key? key,
+    required this.onChangePin,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -293,8 +345,8 @@ class SideBar extends StatelessWidget {
             _buildMenuItem(
               "Pin Change",
               Icons.lock,
-              () {
-                // Navigate to another page if needed
+              () async {
+                await onChangePin();
               },
             ),
             _buildMenuItem(

@@ -21,6 +21,7 @@ class _MealInsightsPageState extends State<MealInsightsPage> {
   List<MealTypeData> mealTypeDistribution = [];
   double averageDailySpending = 0.0;
   bool isLoading = true;
+  
 
   @override
   void initState() {
