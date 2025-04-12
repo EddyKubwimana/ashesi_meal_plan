@@ -135,7 +135,7 @@ class ApiService {
 
     try {
       final response =
-          await _get('getCurrentBalance/$studentId/$startDate/$endDate');
+          await _get('getSubscriberHistory/$studentId/$startDate/$endDate');
 
       if (response is! Map<String, dynamic>) {
         throw InvalidResponseException(
@@ -155,6 +155,36 @@ class ApiService {
     } catch (e) {
       throw FetchDataException(
         'Failed to fetch meal plan history for student $studentId: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>> changeMealPlanPin(String studentId) async {
+    if (studentId.isEmpty) {
+      throw ArgumentError('Student ID cannot be empty');
+    }
+
+    try {
+      final response = await _get('resetPin/$studentId');
+
+      if (response is! Map<String, dynamic>) {
+        throw InvalidResponseException(
+          'Expected Map<String, dynamic> but got ${response.runtimeType}',
+        );
+      }
+
+      if (response.isEmpty) {
+        throw InvalidResponseException('Response is empty');
+      }
+
+      return response;
+    } on ServerBusyException {
+      rethrow;
+    } on InvalidResponseException {
+      rethrow;
+    } catch (e) {
+      throw FetchDataException(
+        'Failed to change pin for student $studentId: ${e.toString()}',
       );
     }
   }
