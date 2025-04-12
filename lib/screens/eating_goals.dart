@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import "../push_notifications/firebase_api.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import "edit_eating_goal.dart";
-import "../push_notifications/firebase_api.dart";
+
 Color customRed = Color(0xFF961818);
 Color lightBackground = Color(0xFFF5F5F5);
 
@@ -81,10 +81,11 @@ class _MyCLPageState extends State<MyCLPage> {
     );
 
     if (selectedTime == null) return; // User canceled
-    
-    String formattedTime = "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
 
-    List<String> goalEntry = [prompt, formattedTime]; 
+    String formattedTime =
+        "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
+
+    List<String> goalEntry = [prompt, formattedTime];
 
     setState(() {
       goals[counter] = goalEntry;
@@ -97,7 +98,7 @@ class _MyCLPageState extends State<MyCLPage> {
     int hour = selectedTime.hour;
     int minute = selectedTime.minute;
     await FirebaseApi().scheduleNotifs(
-      id: counter, // or any unique ID
+      id: counter, 
       title: "Eating Goal",
       body: prompt,
       hour: hour,
@@ -131,7 +132,8 @@ class _MyCLPageState extends State<MyCLPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.restaurant_menu, size: 50, color: Colors.grey[400]),
+                        Icon(Icons.restaurant_menu,
+                            size: 50, color: Colors.grey[400]),
                         SizedBox(height: 16),
                         Text(
                           "No Goals Added Yet",
@@ -155,7 +157,8 @@ class _MyCLPageState extends State<MyCLPage> {
                     itemBuilder: (context, index) {
                       int key = goals.keys.elementAt(index);
                       return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -168,7 +171,8 @@ class _MyCLPageState extends State<MyCLPage> {
                           ],
                         ),
                         child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           title: Text(
                             goals[key]![0], // Goal text
                             style: TextStyle(
@@ -189,7 +193,8 @@ class _MyCLPageState extends State<MyCLPage> {
                                   bool? updated = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => EditGoalPage(goalIndex: index),
+                                      builder: (context) =>
+                                          EditGoalPage(goalIndex: index),
                                     ),
                                   );
                                   if (updated == true) {
@@ -230,7 +235,8 @@ class _MyCLPageState extends State<MyCLPage> {
                     child: TextField(
                       controller: myController,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         border: InputBorder.none,
                         hintText: 'Add an eating goal...',
                         hintStyle: TextStyle(color: Colors.grey[500]),

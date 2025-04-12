@@ -37,6 +37,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   double? dailyLimit;
   String? cardType;
   String? status;
+  double? amount;
+  String? mealPlanName;
 
   Map<String, dynamic>? mealData;
 
@@ -68,6 +70,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         dailyLimit = data['daily_spending_limit'];
         cardType = data['card_type'];
         status = data['subscriber_status'];
+        amount = data['amount'];
+        mealPlanName = data['meal_plan_name'];
       });
     } catch (e) {
       print("Error fetching meal plan data: $e");
@@ -158,8 +162,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     children: [
-                      _buildInfoCard("Semester Balance", "$status",
-                          "GHC ${dailyLimit}", 'assets/food1.jpg'),
+                      _buildInfoCard("Semester Balance", "$funder",
+                          "GHC ${amount}", 'assets/food1.jpg'),
                       _buildInfoCard(
                           "Today Balance",
                           "$cardType",
@@ -167,8 +171,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           'assets/food2.jpg'),
                       _buildInfoCard("Daily Limit", "$status",
                           "GHC ${dailyLimit}", 'assets/food3.jpg'),
-                      _buildInfoCard("Meal Plan Type", "$status",
-                          "GHC ${dailyLimit}", 'assets/food4.jpg'),
+                      _buildInfoCard("Meal Plan Type", "   ",
+                          " ${mealPlanName}", 'assets/food4.jpg'),
                     ],
                   ),
                 ],
@@ -281,7 +285,8 @@ class SideBar extends StatelessWidget {
               () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CafeteriaPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const CafeteriaPage()),
                 );
               },
             ),
