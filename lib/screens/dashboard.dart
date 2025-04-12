@@ -66,10 +66,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         dailyLimit = data['daily_spending_limit'];
         cardType = data['card_type'];
         status = data['subscriber_status'];
-
-        // You can extract more fields from the JSON if needed, e.g.:
-        // dailyLimit = data['daily_limit'];
-        // mealPlanType = data['meal_plan'];
       });
     } catch (e) {
       print("Error fetching meal plan data: $e");
