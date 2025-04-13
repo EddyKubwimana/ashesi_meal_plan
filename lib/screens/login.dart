@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 import 'package:ashesi_meal_plan/controllers/auth_controller.dart';
-import 'package:ashesi_meal_plan/screens/dashboard.dart';
+import 'package:ashesi_meal_plan/routes/app_routes.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -70,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Login 🔐',
+                      'Login',
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.w600,
@@ -89,14 +89,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                         SizedBox(height: 8),
-                        Text(
-                          'Sign in to explore today\'s menu 🍛🍔 and manage your meal plan 📅 effortlessly.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black54,
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 30),
@@ -156,22 +148,20 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                         )),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Don't have an account? "),
-                        GestureDetector(
-                          // onTap: () => Get.off(() => SignUpScreen()),
-                          onTap: () => Get.off(() => DashboardScreen()),
-                          child: const Text(
-                            "Sign Up",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.primaryColor,
-                            ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.offAllNamed(AppRoutes.signUp);
+                        },
+                        child: const Text(
+                          'Sign In',
+                          style: TextStyle(
+                            color: AppTheme.primaryColor,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),

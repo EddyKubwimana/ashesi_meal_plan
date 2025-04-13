@@ -127,7 +127,7 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getMelaPlanHistory(
+  Future<Map<String, dynamic>> getMealPlanHistory(
       String studentId, String startDate, String endDate) async {
     if (studentId.isEmpty) {
       throw ArgumentError('Student ID cannot be empty');
@@ -136,17 +136,6 @@ class ApiService {
     try {
       final response =
           await _get('getSubscriberHistory/$studentId/$startDate/$endDate');
-
-      if (response is! Map<String, dynamic>) {
-        throw InvalidResponseException(
-          'Expected Map<String, dynamic> but got ${response.runtimeType}',
-        );
-      }
-
-      if (response.isEmpty) {
-        throw InvalidResponseException('Response is empty');
-      }
-
       return response;
     } on ServerBusyException {
       rethrow;

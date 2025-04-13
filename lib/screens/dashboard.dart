@@ -5,6 +5,8 @@ import "../services/api_services.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ashesi_meal_plan/screens/cafeteria.dart';
 import 'package:ashesi_meal_plan/screens/meals.dart';
+import 'package:ashesi_meal_plan/routes/app_routes.dart';
+import "package:ashesi_meal_plan/push_notifications/firebase_api.dart";
 
 Color customRed = Color(0xFF961818);
 
@@ -40,6 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String? status;
   double? amount;
   String? mealPlanName;
+  String? userId;
 
   Map<String, dynamic>? mealData;
 
@@ -51,15 +54,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void fetchBalance() async {
-    double newBalance = await ApiService().getCurrentBalance("83092025");
+    userId = await _secureStorage.read(key: 'userId');
+    double newBalance = await ApiService().getCurrentBalance(userId ?? "0");
     setState(() {
       balance = newBalance;
     });
+    await FirebaseApi().scheduleNotifs(
+      id: int.parse(userId ?? "234567890"), // or any unique ID
+      title: "Have you Spent All Your Money?",
+      body: "Get a treat now",
+      hour: 23,
+      minute: 0,
+    );
+    print("I've set your reminder");
   }
 
   Future<void> changePin() async {
     try {
-      final userId = await _secureStorage.read(key: 'userId');
+      userId = await _secureStorage.read(key: 'userId');
       Map<String, dynamic> data =
           await ApiService().changeMealPlanPin("$userId");
 
@@ -67,6 +79,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         firstname = data['firstname'];
         lastname = data['lastname'];
+        userId = userId;
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -90,20 +103,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void fetchMealPlanData() async {
     try {
-      final userId = await _secureStorage.read(key: 'userId');
+      userId = await _secureStorage.read(key: 'userId');
       Map<String, dynamic> data = await ApiService().getMealPlanData("$userId");
 
       setState(() {
         mealData = data;
-        balance = data['current_balance'];
+        balance = data['current_balance'].toDouble();
         funder = data['funder'];
         firstname = data['firstname'];
         lastname = data['lastname'];
-        ;
-        dailyLimit = data['daily_spending_limit'];
+        userId = userId;
+        dailyLimit = data['daily_spending_limit'].toDouble();
         cardType = data['card_type'];
         status = data['subscriber_status'];
-        amount = data['amount'];
+        amount = data['amount'].toDouble();
         mealPlanName = data['meal_plan_name'];
       });
     } catch (e) {
@@ -244,7 +257,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             left: _isSidebarOpen ? 0 : -250,
             top: 0,
             bottom: 0,
-            child: SideBar(onChangePin: changePin),
+            child: SideBar(onChangePin: changePin, userId: userId ?? "00"),
           ),
         ],
       ),
@@ -293,11 +306,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 class SideBar extends StatelessWidget {
   final Future<void> Function() onChangePin;
+  final String userId;
 
-  const SideBar({
-    Key? key,
-    required this.onChangePin,
-  }) : super(key: key);
+  const SideBar({Key? key, required this.onChangePin, required this.userId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -365,12 +377,12 @@ class SideBar extends StatelessWidget {
               "Meal Usage & Insights",
               Icons.insights,
               () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MealInsightsPage(),
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => MealInsightsPage(),
+                //   ),
+                // );
               },
             ),
             _buildMenuItem(
@@ -384,7 +396,7 @@ class SideBar extends StatelessWidget {
               "Logout",
               Icons.logout,
               () {
-                // Handle logout
+                Get.offAllNamed(AppRoutes.signIn); // Handle logout
               },
             ),
           ],

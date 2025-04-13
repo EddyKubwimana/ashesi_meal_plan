@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ashesi_meal_plan/models/user.dart';
@@ -58,9 +59,10 @@ class AuthController extends GetxController {
       );
 
       Get.offAllNamed(AppRoutes.signIn);
-      Get.snackbar('Success', 'Account created successfully!');
+      Get.snackbar('Success', 'Account created successfully!',
+          colorText: Colors.green);
     } catch (e) {
-      Get.snackbar('Sign Up Error', e.toString());
+      Get.snackbar('Sign Up Error', e.toString(), colorText: Colors.red);
       rethrow;
     } finally {
       isLoading.value = false;
@@ -97,7 +99,7 @@ class AuthController extends GetxController {
 
       Get.offAllNamed(AppRoutes.dashboard);
     } catch (e) {
-      Get.snackbar('Login Error', e.toString());
+      Get.snackbar('Login Error', e.toString(), colorText: Colors.red);
     } finally {
       isLoading.value = false;
     }

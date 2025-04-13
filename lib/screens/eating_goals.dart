@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import "../push_notifications/firebase_api.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import "edit_eating_goal.dart";
+import "package:ashesi_meal_plan/main.dart" as main;
 
 Color customRed = Color(0xFF961818);
 Color lightBackground = Color(0xFFF5F5F5);
@@ -27,8 +28,11 @@ class _MyCLPageState extends State<MyCLPage> {
   Future<void> _loadGoals() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
-      counter = prefs.getInt('counter') ?? 0;
+      counter = int.tryParse(prefs.getString("counter") ?? "0") ?? 0;
       goals = _getStoredGoals();
+      prefs.getKeys().forEach((key) {
+          print('Key: $key, Value: ${prefs.get(key)}');
+        });
     });
   }
 
@@ -46,10 +50,10 @@ class _MyCLPageState extends State<MyCLPage> {
   }
 
   void _del(int index) async {
-    setState(() {
-      goals.remove(index);
-    });
+    await main.localNotifications.cancel(index);
     await prefs.remove(index.toString());
+    _loadGoals();
+
   }
 
   Future<void> _sendRequest() async {
@@ -80,12 +84,15 @@ class _MyCLPageState extends State<MyCLPage> {
       helpText: "Set a Reminder Time",
     );
 
+<<<<<<< HEAD
+    if (selectedTime == null) return;
+=======
     if (selectedTime == null) return; // User canceled
+    
+    String formattedTime = "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
+>>>>>>> 17b39edc1526ca6195c5f637d683a25d2cb9219e
 
-    String formattedTime =
-        "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
-
-    List<String> goalEntry = [prompt, formattedTime];
+    List<String> goalEntry = [prompt, formattedTime]; 
 
     setState(() {
       goals[counter] = goalEntry;
@@ -93,17 +100,23 @@ class _MyCLPageState extends State<MyCLPage> {
     });
 
     await prefs.setStringList(counter.toString(), goalEntry);
-    await prefs.setInt('counter', counter);
+    await prefs.setString("counter", counter.toString());
+
     myController.clear();
     int hour = selectedTime.hour;
     int minute = selectedTime.minute;
     await FirebaseApi().scheduleNotifs(
-      id: counter, 
+<<<<<<< HEAD
+      id: counter,
+=======
+      id: counter, // or any unique ID
+>>>>>>> 17b39edc1526ca6195c5f637d683a25d2cb9219e
       title: "Eating Goal",
       body: prompt,
       hour: hour,
       minute: minute,
     );
+    _loadGoals();
   }
 
   @override
@@ -132,8 +145,7 @@ class _MyCLPageState extends State<MyCLPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.restaurant_menu,
-                            size: 50, color: Colors.grey[400]),
+                        Icon(Icons.restaurant_menu, size: 50, color: Colors.grey[400]),
                         SizedBox(height: 16),
                         Text(
                           "No Goals Added Yet",
@@ -157,22 +169,20 @@ class _MyCLPageState extends State<MyCLPage> {
                     itemBuilder: (context, index) {
                       int key = goals.keys.elementAt(index);
                       return Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black12,
+                              color: Colors.white,
                               blurRadius: 4,
                               offset: Offset(0, 2),
                             ),
                           ],
                         ),
                         child: ListTile(
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           title: Text(
                             goals[key]![0], // Goal text
                             style: TextStyle(
@@ -193,12 +203,11 @@ class _MyCLPageState extends State<MyCLPage> {
                                   bool? updated = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          EditGoalPage(goalIndex: index),
+                                      builder: (context) => EditGoalPage(goalIndex: key),
                                     ),
                                   );
                                   if (updated == true) {
-                                    _loadGoals();
+                                    _loadGoals(); // Reload goals after editing
                                   }
                                 },
                               ),
@@ -234,9 +243,9 @@ class _MyCLPageState extends State<MyCLPage> {
                     ),
                     child: TextField(
                       controller: myController,
+                      style: TextStyle(color: customRed), 
                       decoration: InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         border: InputBorder.none,
                         hintText: 'Add an eating goal...',
                         hintStyle: TextStyle(color: Colors.grey[500]),
@@ -249,12 +258,6 @@ class _MyCLPageState extends State<MyCLPage> {
                   ),
                 ),
                 SizedBox(width: 8),
-                FloatingActionButton(
-                  backgroundColor: customRed,
-                  foregroundColor: Colors.white,
-                  onPressed: _sendRequest,
-                  child: Icon(Icons.add),
-                ),
               ],
             ),
           ),

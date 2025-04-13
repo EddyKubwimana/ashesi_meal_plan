@@ -1,28 +1,21 @@
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 import 'package:flutter/material.dart';
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: WelcomeScreen(),
-    );
-  }
-}
+import 'package:ashesi_meal_plan/routes/app_routes.dart';
+import 'package:get/get.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 3), () {
+      Get.offNamed(AppRoutes.signIn);
+    });
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Top Right Circle
           Positioned(
             top: -100,
             right: -100,
@@ -35,7 +28,6 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Bottom Left Circle
           Positioned(
             bottom: -100,
             left: -100,

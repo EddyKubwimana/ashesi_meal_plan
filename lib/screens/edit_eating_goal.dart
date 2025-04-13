@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import "package:ashesi_meal_plan/push_notifications/firebase_api.dart";
+import "package:ashesi_meal_plan/main.dart";
 
 class EditGoalPage extends StatefulWidget {
   final int goalIndex;
@@ -8,11 +10,12 @@ class EditGoalPage extends StatefulWidget {
   @override
   State<EditGoalPage> createState() => _EditGoalPageState();
 }
-
 class _EditGoalPageState extends State<EditGoalPage> {
   late SharedPreferences prefs;
   final TextEditingController goalController = TextEditingController();
   String selectedTime = "00:00"; // Default time
+  int hours = 0;
+  int minutes = 0;
 
   @override
   void initState() {
@@ -28,6 +31,8 @@ class _EditGoalPageState extends State<EditGoalPage> {
       setState(() {
         goalController.text = goalData[0];
         selectedTime = goalData[1];
+        hours = int.parse(selectedTime.split(":")[0]);
+        minutes = int.parse(selectedTime.split(":")[1]);
       });
     }
   }
@@ -48,17 +53,30 @@ class _EditGoalPageState extends State<EditGoalPage> {
 
     if (pickedTime != null) {
       setState(() {
-        selectedTime = "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
+        hours = pickedTime.hour;
+        minutes = pickedTime.minute;
+        selectedTime = "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
       });
     }
   }
 
   Future<void> _saveGoal() async {
     String updatedGoal = goalController.text.trim();
+
     if (updatedGoal.isEmpty) return;
 
+    await FirebaseApi().scheduleNotifs(
+      id: widget.goalIndex,
+      title: "Eating Goal",
+      body: updatedGoal,
+      hour: hours,
+      minute: minutes,
+    );
+
     await prefs.setStringList(widget.goalIndex.toString(), [updatedGoal, selectedTime]);
-    Navigator.pop(context, true); // Return to the main page
+
+    // Returning to the previous screen and notify parent to reload goals
+    Navigator.pop(context, true); // Return to MyCLPage with a success flag
   }
 
   @override
@@ -82,12 +100,20 @@ class _EditGoalPageState extends State<EditGoalPage> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 20),
-            ListTile(
-              title: Text("Reminder Time: $selectedTime"),
-              trailing: IconButton(
-                icon: const Icon(Icons.access_time),
-                onPressed: _pickTime,
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 1.0),
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              child: ListTile(
+             title: Text(
+                  "Reminder Time: $selectedTime",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.access_time),
+                  onPressed: _pickTime,
+                ),
               ),
             ),
             const SizedBox(height: 20),
