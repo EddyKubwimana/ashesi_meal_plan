@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ashesi_meal_plan/screens/cafeteria.dart';
 import 'package:ashesi_meal_plan/screens/meals.dart';
 import 'package:ashesi_meal_plan/routes/app_routes.dart';
-import "package:ashesi_meal_plan/push_notifications/firebase_api.dart";
+import 'package:ashesi_meal_plan/screens/notification_history.dart';
 
 Color customRed = Color(0xFF961818);
 
@@ -59,14 +59,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       balance = newBalance;
     });
-    await FirebaseApi().scheduleNotifs(
-      id: int.parse(userId ?? "234567890"), // or any unique ID
-      title: "Have you Spent All Your Money?",
-      body: "Get a treat now",
-      hour: 23,
-      minute: 0,
-    );
-    print("I've set your reminder");
   }
 
   Future<void> changePin() async {
@@ -114,6 +106,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         lastname = data['lastname'];
         userId = userId;
         dailyLimit = data['daily_spending_limit'].toDouble();
+        ;
         cardType = data['card_type'];
         status = data['subscriber_status'];
         amount = data['amount'].toDouble();
@@ -368,7 +361,7 @@ class SideBar extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MyCLPage(),
+                    builder: (context) => const EatingGoalPage(),
                   ),
                 );
               },
@@ -377,19 +370,24 @@ class SideBar extends StatelessWidget {
               "Meal Usage & Insights",
               Icons.insights,
               () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => MealInsightsPage(),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MealInsightsPage(),
+                  ),
+                );
               },
             ),
             _buildMenuItem(
-              "Share",
-              Icons.share,
+              "Notification",
+              Icons.notification_important,
               () {
-                // Handle share logic
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NotificationHistoryScreen(),
+                  ),
+                );
               },
             ),
             _buildMenuItem(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 import 'package:ashesi_meal_plan/controllers/auth_controller.dart';
 import 'package:ashesi_meal_plan/routes/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -15,7 +17,61 @@ class _SignInScreenState extends State<SignInScreen> {
   final AuthController _authController = Get.find();
   final TextEditingController _userIdController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final LocalAuthentication _localAuth = LocalAuthentication();
   bool _obscurePassword = true;
+  late SharedPreferences userInfo;
+  bool _showBiometricButton = false;
+  bool _biometricAuthInProgress = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initBiometricAuth();
+  }
+
+  Future<void> _initBiometricAuth() async {
+    userInfo = await SharedPreferences.getInstance();
+    final storedUserId = userInfo.getString("userId");
+
+    if (storedUserId != null) {
+      _userIdController.text = storedUserId;
+      final canCheckBiometrics = await _localAuth.canCheckBiometrics;
+      final isDeviceSupported = await _localAuth.isDeviceSupported();
+
+      if (canCheckBiometrics && isDeviceSupported) {
+        setState(() {
+          _showBiometricButton = true;
+        });
+        // Automatically trigger biometric auth
+        _authenticateWithBiometrics();
+      }
+    }
+  }
+
+  Future<void> _authenticateWithBiometrics() async {
+    setState(() {
+      _biometricAuthInProgress = true;
+    });
+
+    try {
+      final didAuthenticate = await _localAuth.authenticate(
+        localizedReason: 'login to Ashesi Meal App',
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+        ),
+      );
+
+      if (didAuthenticate) {
+        Get.offAllNamed(AppRoutes.dashboard);
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Biometric authentication failed: ${e.toString()}');
+    } finally {
+      setState(() {
+        _biometricAuthInProgress = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -30,6 +86,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
     try {
       await _authController.login(userId, password);
+      await userInfo.setString("userId", userId);
     } catch (e) {
       Get.snackbar('Error', 'Login failed. Please check your credentials');
     }
@@ -114,9 +171,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {
-                          // TODO: Forgot Password
-                        },
+                        onPressed: () {},
                         child: const Text(
                           "Forgot Password?",
                           style: TextStyle(
@@ -125,6 +180,44 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
+                    if (_showBiometricButton && !_biometricAuthInProgress)
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            side:
+                                const BorderSide(color: AppTheme.primaryColor),
+                          ),
+                          onPressed: _authenticateWithBiometrics,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.fingerprint,
+                                  color: AppTheme.primaryColor),
+                              SizedBox(width: 8),
+                              Text(
+                                "Use Fingerprint/Face ID",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: AppTheme.primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    if (_showBiometricButton && !_biometricAuthInProgress)
+                      const SizedBox(height: 10),
+                    if (_biometricAuthInProgress)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: CircularProgressIndicator(
+                            color: AppTheme.primaryColor),
+                      ),
                     Obx(() => SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -155,7 +248,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           Get.offAllNamed(AppRoutes.signUp);
                         },
                         child: const Text(
-                          'Sign In',
+                          'Sign Up',
                           style: TextStyle(
                             color: AppTheme.primaryColor,
                             fontWeight: FontWeight.bold,
@@ -202,7 +295,6 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.togglePasswordVisibility,
   });
-
   @override
   Widget build(BuildContext context) {
     return TextField(

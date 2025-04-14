@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:ashesi_meal_plan/repositories/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +11,7 @@ class CafeteriaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Cafeterias'),
         backgroundColor: AppTheme.primaryColor,
@@ -26,7 +26,7 @@ class CafeteriaPage extends StatelessWidget {
               description: 'Located near the the Patrick Nutor Building',
             ),
             CafeteriaCard(
-              name: 'Arknor',
+              name: 'Akonnor',
               imagePath: 'assets/food6.jpg',
               description: 'Located below the Hive & Writing Centre',
             ),
@@ -54,17 +54,14 @@ class CafeteriaCard extends StatelessWidget {
     required this.description,
   }) : super(key: key);
 
-  // Map cafeteria names to their IDs based on the database
   static const Map<String, String> _cafeteriaIdMap = {
     'Munchies': '1',
-    'Arknor': '2', // Corrected spelling to match database ("Akonnor")
+    'Akonnor': '2',
     'HallMark': '3',
   };
 
-  // Function to fetch meals from the API
   Future<Map<String, dynamic>> fetchMeals(String cafeteriaName) async {
-    final cafeteriaId =
-        _cafeteriaIdMap[cafeteriaName == 'Arknor' ? 'Akonnor' : cafeteriaName];
+    final cafeteriaId = _cafeteriaIdMap[cafeteriaName];
     if (cafeteriaId == null) {
       throw Exception('Cafeteria ID not found for $cafeteriaName');
     }
@@ -94,9 +91,8 @@ class CafeteriaCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         onTap: () async {
           try {
-            // Fetch meals when the card is tapped
             final mealsData = await fetchMeals(name);
-            // Navigate to the new MealListPage with the fetched data
+
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -107,7 +103,6 @@ class CafeteriaCard extends StatelessWidget {
               ),
             );
           } catch (e) {
-            // Show an error message if the API call fails
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error loading meals: $e')),
             );
@@ -138,9 +133,9 @@ class CafeteriaCard extends StatelessWidget {
                   Text(
                     name,
                     style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                   ),
                   const SizedBox(height: 8),
                   Text(

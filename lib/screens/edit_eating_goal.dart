@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "package:ashesi_meal_plan/push_notifications/firebase_api.dart";
-import "package:ashesi_meal_plan/main.dart";
+
+Color customRed = Color(0xFF961818);
 
 class EditGoalPage extends StatefulWidget {
   final int goalIndex;
@@ -10,6 +11,7 @@ class EditGoalPage extends StatefulWidget {
   @override
   State<EditGoalPage> createState() => _EditGoalPageState();
 }
+
 class _EditGoalPageState extends State<EditGoalPage> {
   late SharedPreferences prefs;
   final TextEditingController goalController = TextEditingController();
@@ -55,7 +57,8 @@ class _EditGoalPageState extends State<EditGoalPage> {
       setState(() {
         hours = pickedTime.hour;
         minutes = pickedTime.minute;
-        selectedTime = "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
+        selectedTime =
+            "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
       });
     }
   }
@@ -73,7 +76,8 @@ class _EditGoalPageState extends State<EditGoalPage> {
       minute: minutes,
     );
 
-    await prefs.setStringList(widget.goalIndex.toString(), [updatedGoal, selectedTime]);
+    await prefs.setStringList(
+        widget.goalIndex.toString(), [updatedGoal, selectedTime]);
 
     // Returning to the previous screen and notify parent to reload goals
     Navigator.pop(context, true); // Return to MyCLPage with a success flag
@@ -88,6 +92,7 @@ class _EditGoalPageState extends State<EditGoalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF5F5F5),
       appBar: AppBar(title: const Text("Edit Eating Goal")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -95,20 +100,30 @@ class _EditGoalPageState extends State<EditGoalPage> {
           children: [
             TextField(
               controller: goalController,
-              decoration: const InputDecoration(
+              style: TextStyle(color: customRed),
+              decoration: InputDecoration(
                 labelText: "Edit Goal",
-                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: customRed, width: 1.0),
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: customRed,
+                      width: 2.0), // Slightly thicker when focused
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
               ),
             ),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 1.0),
+                border: Border.all(color: customRed, width: 1.0),
                 borderRadius: BorderRadius.circular(4.0),
               ),
               child: ListTile(
-             title: Text(
+                title: Text(
                   "Reminder Time: $selectedTime",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: customRed),
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.access_time),

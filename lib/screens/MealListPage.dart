@@ -5,7 +5,6 @@ class MealListPage extends StatelessWidget {
   final String cafeteriaName;
   final Map<String, dynamic> mealsData;
 
-  // Removed 'const' from the constructor
   MealListPage({
     Key? key,
     required this.cafeteriaName,
@@ -15,24 +14,44 @@ class MealListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('$cafeteriaName Meals'),
+        title: Text(
+          '$cafeteriaName Meals',
+          style: const TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
+        ),
         backgroundColor: AppTheme.primaryColor,
+        elevation: 0,
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: mealsData.isEmpty
-            ? const Center(
-                child: Text(
-                  'No meals found for this cafeteria.',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.grey),
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.fastfood_outlined,
+                      size: 50,
+                      color: Colors.grey[400],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No meals found for this cafeteria',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
                 ),
               )
-            : ListView.builder(
+            : ListView.separated(
                 itemCount: mealsData.keys.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 24),
                 itemBuilder: (context, index) {
                   final day = mealsData.keys.elementAt(index);
                   final dayMeals = mealsData[day];
@@ -44,70 +63,112 @@ class MealListPage extends StatelessWidget {
   }
 
   Widget _buildDaySection(String day, Map<String, dynamic> dayMeals) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            day,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          _buildMealTypeSection('Breakfast', dayMeals['Breakfast']),
-          _buildMealTypeSection('Lunch', dayMeals['Lunch']),
-          _buildMealTypeSection('Dinner',
-              dayMeals['Dinner']), // Fixed typo: 'MeaType' to 'MealType'
-        ],
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              day,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildMealTypeSection('Breakfast', dayMeals['Breakfast']),
+            const SizedBox(height: 12),
+            _buildMealTypeSection('Lunch', dayMeals['Lunch']),
+            const SizedBox(height: 12),
+            _buildMealTypeSection('Dinner', dayMeals['Dinner']),
+          ],
+        ),
       ),
     );
   }
 
-  // Fixed formatting: Removed newline between '_buildMealType' and 'Section'
   Widget _buildMealTypeSection(String mealType, List<dynamic> meals) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          mealType,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
+        Row(
+          children: [
+            Icon(
+              _getMealTypeIcon(mealType),
+              size: 20,
+              color: AppTheme.primaryColor,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              mealType,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 8),
         meals.isNotEmpty
-            ? ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: meals.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: Column(
-                      children: [
-                        Text(
-                          meals[index],
-                          style: const TextStyle(fontSize: 16),
+            ? Column(
+                children: [
+                  ...meals.map((meal) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(top: 4, right: 8),
+                              child: Icon(
+                                Icons.circle,
+                                size: 8,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                meal,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
                         ),
-                        const Divider(height: 1, color: Colors.grey),
-                      ],
-                    ),
-                  );
-                },
+                      )),
+                ],
               )
-            : const Padding(
-                padding: EdgeInsets.symmetric(vertical: 5),
+            : Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
-                  'No meals available.',
+                  'No meals available',
                   style: TextStyle(
-                      fontSize: 16,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.grey),
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey[600],
+                  ),
                 ),
               ),
       ],
     );
+  }
+
+  IconData _getMealTypeIcon(String mealType) {
+    switch (mealType) {
+      case 'Breakfast':
+        return Icons.wb_sunny_outlined;
+      case 'Lunch':
+        return Icons.lunch_dining_outlined;
+      case 'Dinner':
+        return Icons.nightlight_round_outlined;
+      default:
+        return Icons.restaurant_outlined;
+    }
   }
 }

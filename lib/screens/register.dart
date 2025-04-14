@@ -105,15 +105,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const Center(
                       child: Column(
                         children: [
-                          Text(
-                            'Welcome to the Ashesi Food App 🥙!',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.primaryColor,
-                            ),
-                          ),
                           SizedBox(height: 8),
                           Text(
                             'Discover the nearest meals around campus — fast, fresh, and convenient.',
